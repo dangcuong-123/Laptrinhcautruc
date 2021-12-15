@@ -141,7 +141,80 @@ def search_by_filters():
                                   mimetype='error')
     return response
 
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    id = request.form['id']
+    name = request.form['name']
+    type = request.form['type']
+    price = request.form['price']
+    description = request.form['description']
+    size = request.form['size']
+    image = request.form['image']
+    video = request.form['video']
+    color = request.form['color']
+    quantity = request.form['quantity']
+    
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO products (ID, name, type, price, description, size, image, video, color, quantity) VALUES ({}, \"{}\", \"{}\", {}, \"{}\", \"{}\", \"{}\", \"{}\", \"{}\", {});".format
+                (id, name, type, price, description, size, image, video, color, quantity))
+    
+    cur.close()
+    response = app.response_class(response=json.dumps("successfully added"),
+                                  status=200,
+                                  mimetype='notification')
 
+    return response
+
+@app.route('/delete_product', methods=['POST'])
+def delete_product():
+    id = request.form['id']
+
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM products WHERE id={};".format(id))
+    cur.close()
+    response = app.response_class(response=json.dumps("successfully delete"),
+                                  status=200,
+                                  mimetype='notification')
+
+    return response
+
+@app.route('/edit_product', methods=['POST'])
+def edit_product():
+    id = request.form['id']
+    if(id is None):
+        response = app.response_class(response=json.dumps("id not NULL"),
+                                  status=200,
+                                  mimetype='error')
+    
+    name = request.form['name']
+    type = request.form['type']
+    price = request.form['price']
+    description = request.form['description']
+    size = request.form['size']
+    image = request.form['image']
+    video = request.form['video']
+    color = request.form['color']
+    quantity = request.form['quantity']
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id FROM products WHERE id = {};".format(id))
+    fetchdata = cur.fetchall()
+    
+    if(fetchdata == ()):
+        response = app.response_class(response=json.dumps("ID not found"),
+                                  status=200,
+                                  mimetype='error')
+        cur.close()
+        return response
+
+    cur.execute("UPDATE products SET name = \"{}\", type = \"{}\", price = {}, description = \"{}\", size = \"{}\", image = \"{}\", video = \"{}\", color = \"{}\", quantity = {} WHERE id = {};".format
+                (name, type, price, description, size, image, video, color, quantity, id))
+    cur.close()
+    response = app.response_class(response=json.dumps("successfully edit"),
+                                  status=200,
+                                  mimetype='notification')
+
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)
