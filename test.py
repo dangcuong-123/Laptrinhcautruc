@@ -3,6 +3,8 @@ from flask import Flask, render_template, jsonify, request, json
 import flask
 from flask.wrappers import Request
 from flask_mysqldb import MySQL
+import sqlite3
+
 
 app = Flask(__name__)
 
@@ -15,11 +17,13 @@ mysql = MySQL(app)
 
 @app.route('/')
 def home():
+    con = sqlite3.connect('database.db')
     return render_template('index.html')
 
 @app.route('/show')
 def show_product():
-    cur = mysql.connection.cursor()
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
     cur.execute("SELECT * FROM products")
     fetchdata = cur.fetchall()
     cur.close()
@@ -32,7 +36,9 @@ def show_product():
 
 @app.route('/name')
 def search_by_name():
-    cur = mysql.connection.cursor()
+    con = sqlite3.connect('database.db')
+
+    cur = con.cursor()
     name = request.args.get('name') #name = ao
     if(name is None):
         response = app.response_class(response=json.dumps("Invalid value"),
@@ -62,7 +68,9 @@ def is_float(element) -> bool:
 
 @app.route('/price')
 def search_by_price():
-    cur = mysql.connection.cursor()
+    con = sqlite3.connect('database.db')
+
+    cur = con.cursor()
     froms = request.args.get('from') 
     tos = request.args.get('to') 
     if(froms is None or tos is None):
@@ -101,7 +109,9 @@ def search_by_price():
 
 @app.route('/filters')
 def search_by_filters():
-    cur = mysql.connection.cursor()
+    con = sqlite3.connect('database.db')
+
+    cur = con.cursor()
     type = request.args.get('type')
     size = request.args.get('size')
     color = request.args.get('color')
@@ -143,6 +153,7 @@ def search_by_filters():
 
 @app.route('/add_product', methods=['POST'])
 def add_product():
+    con = sqlite3.connect('database.db')
     id = request.form['id']
     name = request.form['name']
     type = request.form['type']
@@ -154,7 +165,7 @@ def add_product():
     color = request.form['color']
     quantity = request.form['quantity']
     
-    cur = mysql.connection.cursor()
+    cur = con.cursor()
     cur.execute("INSERT INTO products (ID, name, type, price, description, size, image, video, color, quantity) VALUES ({}, \"{}\", \"{}\", {}, \"{}\", \"{}\", \"{}\", \"{}\", \"{}\", {});".format
                 (id, name, type, price, description, size, image, video, color, quantity))
     
@@ -167,9 +178,12 @@ def add_product():
 
 @app.route('/delete_product', methods=['POST'])
 def delete_product():
+    con = sqlite3.connect('database.db')
+
     id = request.form['id']
 
-    cur = mysql.connection.cursor()
+    cur = con.cursor()
+
     cur.execute("DELETE FROM products WHERE id={};".format(id))
     cur.close()
     response = app.response_class(response=json.dumps("successfully delete"),
@@ -180,6 +194,8 @@ def delete_product():
 
 @app.route('/edit_product', methods=['POST'])
 def edit_product():
+    con = sqlite3.connect('database.db')
+
     id = request.form['id']
     if(id is None):
         response = app.response_class(response=json.dumps("id not NULL"),
@@ -196,7 +212,7 @@ def edit_product():
     color = request.form['color']
     quantity = request.form['quantity']
 
-    cur = mysql.connection.cursor()
+    cur = con.cursor()
     cur.execute("SELECT id FROM products WHERE id = {};".format(id))
     fetchdata = cur.fetchall()
     
