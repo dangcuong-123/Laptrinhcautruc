@@ -1,19 +1,17 @@
 from logging import debug, error
 from flask import Flask, render_template, jsonify, request, json
-import flask
-from flask.wrappers import Request
-from flask_mysqldb import MySQL
+# from flask_mysqldb import MySQL
 import sqlite3
 
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '123456'
-app.config['MYSQL_DB'] = 'laptrinhcautruc'
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = '123456'
+# app.config['MYSQL_DB'] = 'laptrinhcautruc'
 
-mysql = MySQL(app)
+# mysql = MySQL(app)
 
 @app.route('/')
 def home():
