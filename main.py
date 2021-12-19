@@ -2,25 +2,22 @@ from logging import debug, error
 from flask import Flask, render_template, jsonify, request, json
 import flask
 from flask.wrappers import Request
-from flask_mysqldb import MySQL
 import sqlite3
 
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '123456'
-app.config['MYSQL_DB'] = 'laptrinhcautruc'
-
-mysql = MySQL(app)
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = '123456'
+# app.config['MYSQL_DB'] = 'laptrinhcautruc'
 
 @app.route('/')
 def home():
     con = sqlite3.connect('database.db')
     return render_template('index.html')
 
-@app.route('/show')
+@app.route('/product/show')
 def show_product():
     con = sqlite3.connect('database.db')
     cur = con.cursor()
@@ -34,7 +31,7 @@ def show_product():
                                   mimetype='application/json')
     return response
 
-@app.route('/name')
+@app.route('/product/name')
 def search_by_name():
     con = sqlite3.connect('database.db')
 
@@ -66,7 +63,7 @@ def is_float(element) -> bool:
     except ValueError:
         return False
 
-@app.route('/price')
+@app.route('/product/price')
 def search_by_price():
     con = sqlite3.connect('database.db')
 
@@ -107,7 +104,7 @@ def search_by_price():
                                   mimetype='error')
     return response
 
-@app.route('/filters')
+@app.route('/product/filters')
 def search_by_filters():
     con = sqlite3.connect('database.db')
 
@@ -151,7 +148,7 @@ def search_by_filters():
                                   mimetype='error')
     return response
 
-@app.route('/add_product', methods=['POST'])
+@app.route('/product/add_product', methods=['POST'])
 def add_product():
     con = sqlite3.connect('database.db')
     id = request.form['id']
@@ -176,7 +173,7 @@ def add_product():
 
     return response
 
-@app.route('/delete_product', methods=['POST'])
+@app.route('/product/delete_product', methods=['POST'])
 def delete_product():
     con = sqlite3.connect('database.db')
 
@@ -192,7 +189,7 @@ def delete_product():
 
     return response
 
-@app.route('/edit_product', methods=['POST'])
+@app.route('/product/edit_product', methods=['POST'])
 def edit_product():
     con = sqlite3.connect('database.db')
 
@@ -234,4 +231,5 @@ def edit_product():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
