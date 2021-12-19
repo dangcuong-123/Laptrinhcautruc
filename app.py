@@ -14,7 +14,7 @@ app = Flask(__name__)
 # mysql = MySQL(app)
 
 @app.route('/')
-def home():
+def index():
     con = sqlite3.connect('database.db')
     return render_template('index.html')
 
