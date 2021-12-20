@@ -1,5 +1,5 @@
 from flask import request, json
-from flask_restx import Namespace, Resource, fields
+from flask_restx import Namespace, Resource, fields, reqparse
 import sqlite3
 namespace = Namespace('product', 'Product related endpoints')
 
@@ -46,20 +46,6 @@ product_model = namespace.model('product', {
     )
 }, strict=True)
 
-# product_model_x = namespace.model('product', {
-#     'id': fields.Integer(
-#         readonly=True,
-#         description='This is id of products'
-#     ),
-#     'name': fields.String(
-#         readonly=True,
-#         description='Product\'s name'
-#     )
-# })
-
-
-# hello_world_example = {'id': 123, 'name':'quan ao'}
-
 def responses(fetchdata):
     results = []
     keys = ['id', 'name', 'type', 'price', 'description',
@@ -83,34 +69,37 @@ class ShowProduct(Resource):
         fetchdata = cur.fetchall()
         cur.close()
         if(fetchdata == []):
-            return "1"
+            return "Not found"
         
         return responses(fetchdata)
 
+parser_name = reqparse.RequestParser()
+parser_name.add_argument('name', type=str, help='Product\'s name (eg: quan)')
 @namespace.route('/name')
-class ShowProduct(Resource):
-
+class SearchByName(Resource):
     @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
+    @namespace.expect(parser_name)
     def get(self):
         con = sqlite3.connect('database.db')
 
         cur = con.cursor()
         name = request.args.get('name') #name = ao
-        if(name is None):
-            response = app.response_class(response=json.dumps("Invalid value"),
-                                    status=200,
-                                    mimetype='error')
+        # if(name is None):
+            # response = app.response_class(response=json.dumps("Invalid value"),
+            #                         status=200,
+            #                         mimetype='error')
             
-            return response
+            # return response
         cur.execute("SELECT * FROM products WHERE name LIKE \"%{}%\"".format(name))
         fetchdata = cur.fetchall()
         cur.close()
         response = responses(fetchdata)
-        if(fetchdata == ()):
-            response = app.response_class(response=json.dumps("not found"),
-                                    status=200,
-                                    mimetype='error')
+        if(fetchdata == []):
+            return "Not found"
+            # response = app.response_class(response=json.dumps("not found"),
+            #                         status=200,
+            #                         mimetype='error')
         
         return response
 
@@ -123,7 +112,7 @@ def is_float(element) -> bool:
 
 
 @namespace.route('/price')
-class ShowProduct(Resource):
+class SearchByPrice(Resource):
 
     @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
@@ -132,37 +121,37 @@ class ShowProduct(Resource):
         cur = con.cursor()
         froms = request.args.get('from') 
         tos = request.args.get('to') 
-        if(froms is None or tos is None):
-            response = app.response_class(response=json.dumps("Invalid value"),
-                                    status=200,
-                                    mimetype='error')
+        # if(froms is None or tos is None):
+            # response = app.response_class(response=json.dumps("Invalid value"),
+            #                         status=200,
+            #                         mimetype='error')
             
-            return response
-        if(not is_float(tos) or not is_float(froms)):
-            response = app.response_class(response=json.dumps("from and to must be numberic"),
-                                    status=200,
-                                    mimetype='error')
-            return response
+            # return response
+        # if(not is_float(tos) or not is_float(froms)):
+            # response = app.response_class(response=json.dumps("from and to must be numberic"),
+            #                         status=200,
+            #                         mimetype='error')
+            # return response
             
         tos = float(tos)
         froms = float(froms)
-        if(tos < froms):
-            response = app.response_class(response=json.dumps("from must be less than to"),
-                                    status=200,
-                                    mimetype='error')
-            return response
+        # if(tos < froms):
+        #     response = app.response_class(response=json.dumps("from must be less than to"),
+        #                             status=200,
+        #                             mimetype='error')
+        #     return response
         cur.execute("SELECT * FROM products WHERE {} > price AND price > {}".format(tos, froms))
         fetchdata = cur.fetchall()
         cur.close()
         response = responses(fetchdata)
-        if(fetchdata == ()):
-            response = app.response_class(response=json.dumps("not found"),
-                                    status=200,
-                                    mimetype='error')
+        # if(fetchdata == ()):
+        #     response = app.response_class(response=json.dumps("not found"),
+        #                             status=200,
+        #                             mimetype='error')
         return response
 
 @namespace.route('/filters')
-class ShowProduct(Resource):
+class SearchByFilters(Resource):
 
     @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
@@ -200,18 +189,31 @@ class ShowProduct(Resource):
         cur.close()
         response = responses(fetchdata)
 
-        if(fetchdata == ()):
-            response = app.response_class(response=json.dumps("not found"),
-                                    status=200,
-                                    mimetype='error')
+        # if(fetchdata == ()):
+        #     response = app.response_class(response=json.dumps("not found"),
+        #                             status=200,
+        #                             mimetype='error')
         return response
 
 
-@namespace.route('/add_product', methods=['PUT'])
-class ShowProduct(Resource):
+parser_add = reqparse.RequestParser()
+parser_add.add_argument('id', type=int, help='Product\'s id (eg: 123)', location='form')
+parser_add.add_argument('name', type=str, help='Product\'s name (eg: quan)', location='form')
+parser_add.add_argument('type', type=str, help='Product\'s type (eg: quan)', location='form')
+parser_add.add_argument('price', type=float, help='Product\'s price (eg: quan)', location='form')
+parser_add.add_argument('description', type=str, help='Product\'s description (eg: quan)', location='form')
+parser_add.add_argument('size', type=str, help='Product\'s size (eg: quan)', location='form')
+parser_add.add_argument('image', type=str, help='Product\'s image (eg: quan)', location='form')
+parser_add.add_argument('video', type=str, help='Product\'s video (eg: quan)', location='form')
+parser_add.add_argument('color', type=str, help='Product\'s color (eg: quan)', location='form')
+parser_add.add_argument('quantity', type=int, help='Product\'s quantity (eg: quan)', location='form')
 
-    @namespace.marshal_list_with(product_model)
+@namespace.route('/add_product', methods=['PUT'])
+class AddProduct(Resource):
+
+    # @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
+    @namespace.expect(parser_add, validate=True)
     def put(self):
         con = sqlite3.connect('database.db')
         id = request.form['id']
@@ -231,10 +233,10 @@ class ShowProduct(Resource):
         con.commit()
 
         cur.close()
-        response = app.response_class(response=json.dumps("successfully added"),
-                                    status=200,
-                                    mimetype='notification')
-
+        # response = app.response_class(response=json.dumps("successfully added"),
+        #                             status=200,
+        #                             mimetype='notification')
+        response = "ok"
         return response
 
 @namespace.route('/delete_product', methods=['DELETE'])
@@ -253,27 +255,28 @@ class DeleteProduct(Resource):
         con.commit()
 
         cur.close()
-        response = app.response_class(response=json.dumps("successfully delete"),
-                                    status=200,
-                                    mimetype='notification')
+        # response = app.response_class(response=json.dumps("successfully delete"),
+        #                             status=200,
+        #                             mimetype='notification')
+        response = "ok"
         return response
-
 
 
 @namespace.route('/edit_product', methods=['POST'])
 class EditProduct(Resource):
 
-    @namespace.marshal_list_with(product_model)
+    # @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
+    @namespace.expect(parser_add, validate=True)
     def post(self):
         con = sqlite3.connect('database.db')
 
         id = request.form['id']
-        if(id is None):
+        # if(id is None):
             # response = app.response_class(response=json.dumps("id not NULL"),
             #                         status=200,
             #                         mimetype='error')
-            return 
+            # return 
         
         name = request.form.get('name', default=None)
         type = request.form.get('type', default=None)
@@ -289,22 +292,20 @@ class EditProduct(Resource):
         cur.execute("SELECT id FROM products WHERE id = {};".format(id))
         fetchdata = cur.fetchall()
         
-        if(fetchdata == ()):
-            response = app.response_class(response=json.dumps("ID not found"),
-                                    status=200,
-                                    mimetype='error')
-            cur.close()
-            return response
+        # if(fetchdata == ()):
+        #     response = app.response_class(response=json.dumps("ID not found"),
+        #                             status=200,
+        #                             mimetype='error')
+        #     cur.close()
+        #     return response
 
         cur.execute("UPDATE products SET name = \"{}\", type = \"{}\", price = {}, description = \"{}\", size = \"{}\", image = \"{}\", video = \"{}\", color = \"{}\", quantity = {} WHERE id = {};".format
                     (name, type, price, description, size, image, video, color, quantity, id))
         
         con.commit()
         cur.close()
-        response = app.response_class(response=json.dumps("successfully edit"),
-                                    status=200,
-                                    mimetype='notification')
-
+        # response = app.response_class(response=json.dumps("successfully edit"),
+        #                             status=200,
+        #                             mimetype='notification')
+        response = "ok"
         return response
-
-
