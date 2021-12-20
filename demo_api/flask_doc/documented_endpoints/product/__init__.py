@@ -1,3 +1,4 @@
+from os import name
 from flask import request, json
 from flask_restx import Namespace, Resource, fields
 import sqlite3
@@ -265,15 +266,21 @@ class EditProduct(Resource):
 
     @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
+    @namespace.response(401, 'Error')
+    @namespace.response(402, 'ID not found')
+    @namespace.response(403, 'successfully edit')
+
     def post(self):
         con = sqlite3.connect('database.db')
-
-        id = request.form['id']
-        if(id is None):
-            # response = app.response_class(response=json.dumps("id not NULL"),
-            #                         status=200,
-            #                         mimetype='error')
-            return 
+        try:
+            id = request.form['id']
+        except:
+            return 401
+        # if(id is None):
+        #     # response = app.response_class(response=json.dumps("id not NULL"),
+        #     #                         status=200,
+        #     #                         mimetype='error')
+        #     return 
         
         name = request.form.get('name', default=None)
         type = request.form.get('type', default=None)
@@ -290,9 +297,10 @@ class EditProduct(Resource):
         fetchdata = cur.fetchall()
         
         if(fetchdata == ()):
-            response = app.response_class(response=json.dumps("ID not found"),
-                                    status=200,
-                                    mimetype='error')
+            # response = app.response_class(response=json.dumps("ID not found"),
+            #                         status=200,
+            #                         mimetype='error')
+            response = 402
             cur.close()
             return response
 
@@ -301,9 +309,7 @@ class EditProduct(Resource):
         
         con.commit()
         cur.close()
-        response = app.response_class(response=json.dumps("successfully edit"),
-                                    status=200,
-                                    mimetype='notification')
+        response = 402
 
         return response
 
