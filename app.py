@@ -27,7 +27,6 @@ def show_product():
     cur.close()
     if(fetchdata == []):
         return "1"
-    print(fetchdata)
     response = app.response_class(response=json.dumps(fetchdata),
                                   status=200,
                                   mimetype='application/json')
