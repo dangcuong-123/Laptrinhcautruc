@@ -27,6 +27,7 @@ def show_product():
     cur.close()
     if(fetchdata == []):
         return "1"
+    print(fetchdata)
     response = app.response_class(response=json.dumps(fetchdata),
                                   status=200,
                                   mimetype='application/json')
@@ -166,7 +167,8 @@ def add_product():
     cur = con.cursor()
     cur.execute("INSERT INTO products (ID, name, type, price, description, size, image, video, color, quantity) VALUES ({}, \"{}\", \"{}\", {}, \"{}\", \"{}\", \"{}\", \"{}\", \"{}\", {});".format
                 (id, name, type, price, description, size, image, video, color, quantity))
-    
+    con.commit()
+
     cur.close()
     response = app.response_class(response=json.dumps("successfully added"),
                                   status=200,
@@ -183,11 +185,12 @@ def delete_product():
     cur = con.cursor()
 
     cur.execute("DELETE FROM products WHERE id={};".format(id))
+    con.commit()
+
     cur.close()
     response = app.response_class(response=json.dumps("successfully delete"),
                                   status=200,
                                   mimetype='notification')
-
     return response
 
 @app.route('/edit_product', methods=['POST'])
@@ -200,15 +203,15 @@ def edit_product():
                                   status=200,
                                   mimetype='error')
     
-    name = request.form['name']
-    type = request.form['type']
-    price = request.form['price']
-    description = request.form['description']
-    size = request.form['size']
-    image = request.form['image']
-    video = request.form['video']
-    color = request.form['color']
-    quantity = request.form['quantity']
+    name = request.form.get('name', default=None)
+    type = request.form.get('type', default=None)
+    price = request.form.get('price', default=None)
+    description = request.form.get('description', default=None)
+    size = request.form.get('size', default=None)
+    image = request.form.get('image', default=None)
+    video = request.form.get('video', default=None)
+    color = request.form.get('color', default=None)
+    quantity = request.form.get('quantity', default=None)
 
     cur = con.cursor()
     cur.execute("SELECT id FROM products WHERE id = {};".format(id))
@@ -223,6 +226,8 @@ def edit_product():
 
     cur.execute("UPDATE products SET name = \"{}\", type = \"{}\", price = {}, description = \"{}\", size = \"{}\", image = \"{}\", video = \"{}\", color = \"{}\", quantity = {} WHERE id = {};".format
                 (name, type, price, description, size, image, video, color, quantity, id))
+    
+    con.commit()
     cur.close()
     response = app.response_class(response=json.dumps("successfully edit"),
                                   status=200,
