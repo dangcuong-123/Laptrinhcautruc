@@ -13,7 +13,7 @@ contextvars==2.4
 cycler==0.10.0
 Cython==0.29.24
 dask==2021.3.0
-dataclasses==0.8
+dataclasses==0.6
 decorator==4.4.2
 defusedxml==0.7.1
 distributed==2021.3.0
