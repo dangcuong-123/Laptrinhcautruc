@@ -1,5 +1,3 @@
-# logging
 flask
 gunicorn
 flask_restx
-# sqlite
