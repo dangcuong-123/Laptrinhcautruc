@@ -205,22 +205,22 @@ class SearchByFilters(Resource):
         color = request.args.get('color')
         
         if((not type is None) and (not size is None) and (not color is None)):
-            cur.execute("SELECT * FROM products WHERE type LIKE \"%{}%\" AND size LIKE \"%{}%\" AND color LIKE \"%{}%\"".format(type, size, color))
+            cur.execute("SELECT * FROM products WHERE type LIKE \"%{}%\" AND size = \"{}\" AND color LIKE \"%{}%\"".format(type, size, color))
 
         elif((not size is None) and (not type is None)):
-            cur.execute("SELECT * FROM products WHERE type LIKE \"%{}%\" AND size LIKE \"%{}%\" ".format(type, size))
+            cur.execute("SELECT * FROM products WHERE type LIKE \"%{}%\" AND size = \"{}\" ".format(type, size))
 
         elif((not type is None) and (not color is None)):
             cur.execute("SELECT * FROM products WHERE type LIKE \"%{}%\" AND color LIKE \"%{}%\" ".format(type, color))
         
         elif((not size is None) and (not color is None)):
-            cur.execute("SELECT * FROM products WHERE size LIKE \"%{}%\" AND color LIKE \"%{}%\" ".format(size, color))
+            cur.execute("SELECT * FROM products WHERE size = \"{}\" AND color LIKE \"%{}%\" ".format(size, color))
 
         elif(not type is None):
             cur.execute("SELECT * FROM products WHERE type LIKE \"%{}%\"".format(type))
 
         elif(not size is None):
-            cur.execute("SELECT * FROM products WHERE size LIKE \"%{}%\"".format(size))
+            cur.execute("SELECT * FROM products WHERE size = \"{}\"".format(size))
 
         elif(not color is None):
             cur.execute("SELECT * FROM products WHERE color LIKE \"%{}%\"".format(color))
