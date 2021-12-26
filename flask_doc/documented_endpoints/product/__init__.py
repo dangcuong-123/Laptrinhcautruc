@@ -61,10 +61,10 @@ def responses(fetchdata):
 @namespace.route('/show')
 class ShowProduct(Resource):
 
-    @namespace.marshal_list_with(product_model)
+    # @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
     @namespace.response(404, 'Not Found')
-
+    @namespace.response(200, 'Success', product_model)
     def get(self):
         con = sqlite3.connect('database.db')
         cur = con.cursor()
@@ -84,6 +84,7 @@ class SearchByID(Resource):
     @namespace.response(500, 'Internal Server error')
     @namespace.response(404, 'Not Found')
     @namespace.response(400, 'Invalid value')
+    @namespace.response(200, 'Success', product_model)
 
     @namespace.expect(parser_id)
     def get(self):
@@ -108,10 +109,11 @@ parser_name = reqparse.RequestParser()
 parser_name.add_argument('name', type=str, help='Product\'s name (eg: quan)')
 @namespace.route('/name')
 class SearchByName(Resource):
-    @namespace.marshal_list_with(product_model)
+    # @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
     @namespace.response(404, 'Not Found')
     @namespace.response(400, 'Invalid value')
+    @namespace.response(200, 'Success', product_model)
 
     @namespace.expect(parser_name)
     def get(self):
@@ -152,6 +154,7 @@ class SearchByPrice(Resource):
     @namespace.response(400, 'Invalid value - From and to must be numberic - From must be less than to')
     # @namespace.response(250,'from and to must be numberic')
     # @namespace.response(251,'from must be less than to')
+    @namespace.response(200, 'Success', product_model)
     @namespace.expect(parser_price)
     def get(self):
         con = sqlite3.connect('database.db')
@@ -188,9 +191,10 @@ parser_filter.add_argument('color', type=str, help='Product\'s color (eg: vang)'
 @namespace.route('/filters')
 class SearchByFilters(Resource):
 
-    @namespace.doc(product_model)
+    # @namespace.doc(product_model)
     @namespace.response(500, 'Internal Server error')
     @namespace.response(404, 'Not Found')
+    @namespace.response(200, 'Success', product_model)
     @namespace.expect(parser_filter)
     def get(self):
         con = sqlite3.connect('database.db')
@@ -278,7 +282,7 @@ parser_delete.add_argument('id', type=int, help='Product\'s id (eg: 123)', locat
 @namespace.route('/delete_product', methods=['DELETE'])
 class DeleteProduct(Resource):
 
-    @namespace.marshal_list_with(product_model)
+    # @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
     @namespace.response(200, 'Successfully delete')
     @namespace.expect(parser_delete, validate=True)
