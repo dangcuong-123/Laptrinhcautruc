@@ -2,6 +2,8 @@ from os import name
 from flask import request, json
 from flask_restx import Namespace, Resource, fields, reqparse
 import sqlite3
+from flask_cors import CORS, cross_origin
+
 namespace = Namespace('product', 'Product related endpoints')
 
 product_model = namespace.model('product', {
