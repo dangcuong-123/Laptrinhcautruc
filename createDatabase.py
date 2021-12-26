@@ -43,14 +43,11 @@ cur.execute('''INSERT INTO products(ID, name, type, price, description, size, im
 
 cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (154,"ao len giu am","ao len", 80000, "ngon, bo, re","XL","https://sakurafashion.vn/upload/sanpham/large/6351-ao-len-trong-co-don-gian-1.jpg", NULL,"nau", 11);''')
 
-cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (163,"ao len co lo","ao
-len", 1200000, "ngon, bo, re","X","https://scontent.webpluscnd.net/photos-df/a-0/1912-1868961-1/ao-len-nu-gu--uniqlo---wl144.png?atk=6f7db80a49ce4c5e7ac5f209ac9806c4", NULL,"den", 11);''')
+cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (163,"ao len co lo","ao len", 1200000, "ngon, bo, re","X","https://scontent.webpluscnd.net/photos-df/a-0/1912-1868961-1/ao-len-nu-gu--uniqlo---wl144.png?atk=6f7db80a49ce4c5e7ac5f209ac9806c4", NULL,"den", 11);''')
 
-cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (173,"ao bong ro","ao
-ba lo", 120000, "ngon, bo, re","XL","https://chuyendobongro.com/wp-content/uploads/2020/08/%C3%81o-b%C3%B3ng-r%E1%BB%95-c%C3%B3-tay-Jordan-Bull-%C4%90%E1%BB%8F.jpg", NULL,"den", 11);''')
+cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (173,"ao bong ro","ao ba lo", 120000, "ngon, bo, re","XL","https://chuyendobongro.com/wp-content/uploads/2020/08/%C3%81o-b%C3%B3ng-r%E1%BB%95-c%C3%B3-tay-Jordan-Bull-%C4%90%E1%BB%8F.jpg", NULL,"den", 11);''')
 
-cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (183,"ao coc","ao
-phong", 50000, "ngon, bo, re","XL","https://lh3.googleusercontent.com/proxy/M7Qzao6IgZUQSTFtGImNw_2esnXTmDS9WlclmMxiOEOcYqGxhRFf-Dxc0Ad053lLrnnkNLSAgVzILOzDVo1aJCjsULFiJk6JpETRBzvyfHkhNV0hBqfPOqksGUSDK7rk9MaU57HIQdD7nuYWeMV1", NULL,"vang", 11);''')
+cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (183,"ao coc","ao phong", 50000, "ngon, bo, re","XL","https://lh3.googleusercontent.com/proxy/M7Qzao6IgZUQSTFtGImNw_2esnXTmDS9WlclmMxiOEOcYqGxhRFf-Dxc0Ad053lLrnnkNLSAgVzILOzDVo1aJCjsULFiJk6JpETRBzvyfHkhNV0hBqfPOqksGUSDK7rk9MaU57HIQdD7nuYWeMV1", NULL,"vang", 11);''')
 
 con.commit()
 
