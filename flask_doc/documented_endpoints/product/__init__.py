@@ -76,6 +76,32 @@ class ShowProduct(Resource):
         
         return responses(fetchdata)
 
+parser_id = reqparse.RequestParser()
+parser_id.add_argument('id', type=int, help='Product\'s id (eg: 5)')
+@namespace.route('/id')
+class SearchByName(Resource):
+    @namespace.response(500, 'Internal Server error')
+    @namespace.response(404, 'Not Found')
+    @namespace.response(400, 'Invalid value')
+
+    @namespace.expect(parser_id)
+    def get(self):
+        con = sqlite3.connect('database.db')
+
+        cur = con.cursor()
+        id = request.args.get('id') #name = ao
+        if(name is None):
+            return 400
+        cur.execute("SELECT * FROM products WHERE id = {}".format(id))
+        fetchdata = cur.fetchall()
+        cur.close()
+        response = responses(fetchdata)
+        if(len(fetchdata) == 0):
+            return 404
+        
+        return response
+
+
 parser_name = reqparse.RequestParser()
 parser_name.add_argument('name', type=str, help='Product\'s name (eg: quan)')
 @namespace.route('/name')
