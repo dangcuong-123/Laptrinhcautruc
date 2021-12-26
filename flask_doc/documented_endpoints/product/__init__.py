@@ -72,14 +72,15 @@ class ShowProduct(Resource):
         fetchdata = cur.fetchall()
         cur.close()
         if(len(fetchdata) == 0):
-            return 404
+            return namespace.abort(404, 'Not Found')
+            # return 404
         
         return responses(fetchdata)
 
 parser_id = reqparse.RequestParser()
 parser_id.add_argument('id', type=int, help='Product\'s id (eg: 5)')
 @namespace.route('/id')
-class SearchByName(Resource):
+class SearchByID(Resource):
     @namespace.response(500, 'Internal Server error')
     @namespace.response(404, 'Not Found')
     @namespace.response(400, 'Invalid value')
@@ -91,13 +92,14 @@ class SearchByName(Resource):
         cur = con.cursor()
         id = request.args.get('id') #name = ao
         if(name is None):
-            return 400
+            return namespace.abort(400, 'Invalid value')
         cur.execute("SELECT * FROM products WHERE id = {}".format(id))
         fetchdata = cur.fetchall()
         cur.close()
         response = responses(fetchdata)
         if(len(fetchdata) == 0):
-            return 404
+            return namespace.abort(404, 'Not Found')
+            # return 404
         
         return response
 
@@ -118,13 +120,15 @@ class SearchByName(Resource):
         cur = con.cursor()
         name = request.args.get('name') #name = ao
         if(name is None):
-            return 400
+            return namespace.abort(400, 'Invalid value')
+            # return 400
         cur.execute("SELECT * FROM products WHERE name LIKE \"%{}%\"".format(name))
         fetchdata = cur.fetchall()
         cur.close()
         response = responses(fetchdata)
         if(len(fetchdata) == 0):
-            return 404
+            return namespace.abort(404, 'Not Found')
+            # return 404
         
         return response
 
@@ -137,17 +141,17 @@ def is_float(element) -> bool:
 
 
 parser_price = reqparse.RequestParser()
-parser_price.add_argument('from', type=str, help='Price product\'s from (eg: 100)')
-parser_price.add_argument('to', type=str, help='Price product\'s to (eg: 200)')
+parser_price.add_argument('from', type=float, help='Price product\'s from (eg: 100)')
+parser_price.add_argument('to', type=float, help='Price product\'s to (eg: 200)')
 
 @namespace.route('/price')
 class SearchByPrice(Resource):
 
     @namespace.response(500, 'Internal Server error')
     @namespace.response(404, 'Not Found')
-    @namespace.response(400, 'Invalid value')
-    @namespace.response(250,'from and to must be numberic')
-    @namespace.response(251,'from must be less than to')
+    @namespace.response(400, 'Invalid value - From and to must be numberic - From must be less than to')
+    # @namespace.response(250,'from and to must be numberic')
+    # @namespace.response(251,'from must be less than to')
     @namespace.expect(parser_price)
     def get(self):
         con = sqlite3.connect('database.db')
@@ -155,23 +159,25 @@ class SearchByPrice(Resource):
         froms = request.args.get('from') 
         tos = request.args.get('to') 
         if(froms is None or tos is None):
+            return namespace.abort(400, 'Invalid value')
             response = 400
             # return response
         if(not is_float(tos) or not is_float(froms)):
-            response = 250
-            return response
+            # response = 250
+            return namespace.abort(250, 'from and to must be numberic')
             
         tos = float(tos)
         froms = float(froms)
         if(tos < froms):
-            response = 251
-            return response
+            # response = 251
+            return namespace.abort(251, 'From must be less than to')
         cur.execute("SELECT * FROM products WHERE {} > price AND price > {}".format(tos, froms))
         fetchdata = cur.fetchall()
         cur.close()
         response = responses(fetchdata)
         if(fetchdata == ()):
-            response = 404
+            return namespace.abort(404, 'Not Found')
+            # response = 404
         return response
 
 
@@ -221,7 +227,8 @@ class SearchByFilters(Resource):
         response = responses(fetchdata)
 
         if(len(fetchdata) == 0):
-            response = 404
+            return namespace.abort(404, 'Not Found')
+            # response = 404
         return response
 
 
@@ -261,8 +268,9 @@ class AddProduct(Resource):
                     (id, name, type, price, description, size, image, video, color, quantity))
         con.commit()
         cur.close()
-        response = 200
-        return response
+        # response = 200
+        return namespace.abort(200, 'Successfully Added')
+        # return response
 
 parser_delete = reqparse.RequestParser()
 parser_delete.add_argument('id', type=int, help='Product\'s id (eg: 123)', location='form')
@@ -272,7 +280,7 @@ class DeleteProduct(Resource):
 
     @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
-    @namespace.response(202, 'successfully delete')
+    @namespace.response(200, 'Successfully delete')
     @namespace.expect(parser_delete, validate=True)
     def delete(self):
         con = sqlite3.connect('database.db')
@@ -285,17 +293,19 @@ class DeleteProduct(Resource):
         con.commit()
 
         cur.close()
-        response = 202
-        return response
+        # response = 202
+        return namespace.abort(200, 'Successfully delete')
+        # return response
 
 @namespace.route('/edit_product', methods=['POST'])
 class EditProduct(Resource):
 
     # @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
-    @namespace.response(401, 'Error')
-    @namespace.response(402, 'ID Not Found')
-    @namespace.response(200, 'successfully edit')
+    @namespace.response(400, 'Error - ID Not Found')
+    # @namespace.response(401, 'Error')
+    # @namespace.response(402, 'ID Not Found')
+    @namespace.response(200, 'Successfully edit')
     @namespace.expect(parser_add, validate=True)
 
     def post(self):
@@ -303,7 +313,8 @@ class EditProduct(Resource):
         try:
             id = request.form['id']
         except:
-            return 401
+            return namespace.abort(400, 'Error')
+            # return 401
         
         name = request.form.get('name', default=None)
         type = request.form.get('type', default=None)
@@ -320,15 +331,17 @@ class EditProduct(Resource):
         fetchdata = cur.fetchall()
         
         if(len(fetchdata) == 0):
-            response = 402
+            # response = 402
             cur.close()
-            return response
+            return namespace.abort(400, 'ID Not Found')
+            # return response
 
         cur.execute("UPDATE products SET name = \"{}\", type = \"{}\", price = {}, description = \"{}\", size = \"{}\", image = \"{}\", video = \"{}\", color = \"{}\", quantity = {} WHERE id = {};".format
                     (name, type, price, description, size, image, video, color, quantity, id))
         
         con.commit()
         cur.close()
-        response = 200
+        # response = 200
 
-        return response
+        # return response
+        return namespace.abort(200, 'Successfully edit')
