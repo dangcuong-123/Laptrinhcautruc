@@ -41,8 +41,7 @@ cur.execute('''INSERT INTO products (ID, name, type, price, description, size, i
 
 cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (195,"ao ba lo","ao ba lo", 30000, "ngon, bo, re","X","https://shoptretho.com.vn/upload/image/product/20160620/ao-ba-lo-so-sinh-carter-1.jpg", NULL,"den", 11);''')
 
-cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (154,"ao len giu am","ao
-len", 80000, "ngon, bo, re","XL","https://sakurafashion.vn/upload/sanpham/large/6351-ao-len-trong-co-don-gian-1.jpg", NULL,"nau", 11);''')
+cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (154,"ao len giu am","ao len", 80000, "ngon, bo, re","XL","https://sakurafashion.vn/upload/sanpham/large/6351-ao-len-trong-co-don-gian-1.jpg", NULL,"nau", 11);''')
 
 cur.execute('''INSERT INTO products(ID, name, type, price, description, size, image, video, color,  quantity) VALUES (163,"ao len co lo","ao
 len", 1200000, "ngon, bo, re","X","https://scontent.webpluscnd.net/photos-df/a-0/1912-1868961-1/ao-len-nu-gu--uniqlo---wl144.png?atk=6f7db80a49ce4c5e7ac5f209ac9806c4", NULL,"den", 11);''')
