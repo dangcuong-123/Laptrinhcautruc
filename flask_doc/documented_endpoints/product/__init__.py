@@ -2,7 +2,6 @@ from os import name
 from flask import request, json
 from flask_restx import Namespace, Resource, fields, reqparse
 import sqlite3
-from flask_cors import CORS, cross_origin
 
 namespace = Namespace('product', 'Product related endpoints')
 
@@ -255,6 +254,7 @@ class AddProduct(Resource):
     # @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
     @namespace.response(200, 'Successfully Added')
+    @namespace.response(400, 'ID already exist')
     @namespace.expect(parser_add, validate=True)
     def put(self):
         con = sqlite3.connect('database.db')
@@ -270,12 +270,20 @@ class AddProduct(Resource):
         quantity = request.form['quantity']
         
         cur = con.cursor()
+
+        cur.execute("SELECT id FROM products WHERE id = {};".format(id))
+        fetchdata = cur.fetchall()
+        
+        if(len(fetchdata) > 0):
+            cur.close()
+            return namespace.abort(400, 'ID already exist')
+        
         cur.execute("INSERT INTO products (ID, name, type, price, description, size, image, video, color, quantity) VALUES ({}, \"{}\", \"{}\", {}, \"{}\", \"{}\", \"{}\", \"{}\", \"{}\", {});".format
                     (id, name, type, price, description, size, image, video, color, quantity))
         con.commit()
         cur.close()
         # response = 200
-        return namespace.abort(200, 'Successfully Added')
+        return 'Successfully Added'
         # return response
 
 parser_delete = reqparse.RequestParser()
@@ -287,6 +295,7 @@ class DeleteProduct(Resource):
     # @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
     @namespace.response(200, 'Successfully delete')
+    @namespace.response(400, 'ID not found')
     @namespace.expect(parser_delete, validate=True)
     def delete(self):
         con = sqlite3.connect('database.db')
@@ -294,13 +303,19 @@ class DeleteProduct(Resource):
         id = request.form['id']
 
         cur = con.cursor()
+        cur.execute("SELECT id FROM products WHERE id = {};".format(id))
+        fetchdata = cur.fetchall()
+        
+        if(len(fetchdata) == 0):
+            cur.close()
+            return namespace.abort(400, 'ID not found')
 
         cur.execute("DELETE FROM products WHERE id={};".format(id))
         con.commit()
 
         cur.close()
         # response = 202
-        return namespace.abort(200, 'Successfully delete')
+        return 'Successfully delete'
         # return response
 
 @namespace.route('/edit_product', methods=['POST'])
@@ -342,12 +357,15 @@ class EditProduct(Resource):
             return namespace.abort(400, 'ID Not Found')
             # return response
 
-        cur.execute("UPDATE products SET name = \"{}\", type = \"{}\", price = {}, description = \"{}\", size = \"{}\", image = \"{}\", video = \"{}\", color = \"{}\", quantity = {} WHERE id = {};".format
-                    (name, type, price, description, size, image, video, color, quantity, id))
+        cols = ['name', 'type', 'price', 'description', 'size', 'image', 'video', 'color', 'quantity']
+        inputs = [name, type, price, description, size, image, video, color, quantity]
+        for i, col in enumerate(cols):
+            if(not inputs[i] is None):
+                cur.execute("UPDATE products SET {} = \"{}\" WHERE id = {};".format(col, inputs[i], id))
         
         con.commit()
         cur.close()
         # response = 200
 
         # return response
-        return namespace.abort(200, 'Successfully edit')
+        return 'Successfully edit'
