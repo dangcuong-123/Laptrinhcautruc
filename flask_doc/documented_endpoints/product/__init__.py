@@ -254,20 +254,27 @@ class AddProduct(Resource):
     # @namespace.marshal_list_with(product_model)
     @namespace.response(500, 'Internal Server error')
     @namespace.response(200, 'Successfully Added')
-    @namespace.response(400, 'ID already exist')
+    @namespace.response(400, 'ID already exist - ID not null')
     @namespace.expect(parser_add, validate=True)
     def put(self):
         con = sqlite3.connect('database.db')
-        id = request.form['id']
-        name = request.form['name']
-        type = request.form['type']
-        price = request.form['price']
-        description = request.form['description']
-        size = request.form['size']
-        image = request.form['image']
-        video = request.form['video']
-        color = request.form['color']
-        quantity = request.form['quantity']
+        # id = request.form['id']
+
+        try:
+            id = request.form['id']
+        except:
+            return namespace.abort(400, 'ID not null')
+            # return 401
+
+        name = request.form.get('name', default=None)
+        type = request.form.get('type', default=None)
+        price = request.form.get('price', default=None)
+        description = request.form.get('description', default=None)
+        size = request.form.get('size', default=None)
+        image = request.form.get('image', default=None)
+        video = request.form.get('video', default=None)
+        color = request.form.get('color', default=None)
+        quantity = request.form.get('quantity', default=None)
         
         cur = con.cursor()
 
@@ -370,52 +377,4 @@ class EditProduct(Resource):
         # return response
         return 'Successfully edit'
 
-@namespace.route('/edit_product', methods=['POST'])
-class EditProduct(Resource):
-
-    @namespace.response(500, 'Internal Server error')
-    @namespace.response(400, 'Error - ID Not Found')
-    @namespace.response(200, 'Successfully edit')
-    @namespace.expect(parser_add, validate=True)
-
-    def post(self):
-        con = sqlite3.connect('database.db')
-        try:
-            id = request.form['id']
-        except:
-            return namespace.abort(400, 'Error')
-            # return 401
-        
-        name = request.form.get('name', default=None)
-        type = request.form.get('type', default=None)
-        price = request.form.get('price', default=None)
-        description = request.form.get('description', default=None)
-        size = request.form.get('size', default=None)
-        image = request.form.get('image', default=None)
-        video = request.form.get('video', default=None)
-        color = request.form.get('color', default=None)
-        quantity = request.form.get('quantity', default=None)
-
-        cur = con.cursor()
-        cur.execute("SELECT id FROM products WHERE id = {};".format(id))
-        fetchdata = cur.fetchall()
-        
-        if(len(fetchdata) == 0):
-            # response = 402
-            cur.close()
-            return namespace.abort(400, 'ID Not Found')
-            # return response
-
-        cols = ['name', 'type', 'price', 'description', 'size', 'image', 'video', 'color', 'quantity']
-        inputs = [name, type, price, description, size, image, video, color, quantity]
-        for i, col in enumerate(cols):
-            if(not inputs[i] is None):
-                cur.execute("UPDATE products SET {} = \"{}\" WHERE id = {};".format(col, inputs[i], id))
-        
-        con.commit()
-        cur.close()
-        # response = 200
-
-        # return response
-        return 'Successfully edit'
 
