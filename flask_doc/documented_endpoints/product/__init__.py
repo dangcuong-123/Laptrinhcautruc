@@ -266,15 +266,15 @@ class AddProduct(Resource):
             return namespace.abort(400, 'ID not null')
             # return 401
 
-        name = request.form.get('name', default=None)
-        type = request.form.get('type', default=None)
-        price = request.form.get('price', default=None)
-        description = request.form.get('description', default=None)
-        size = request.form.get('size', default=None)
-        image = request.form.get('image', default=None)
-        video = request.form.get('video', default=None)
-        color = request.form.get('color', default=None)
-        quantity = request.form.get('quantity', default=None)
+        name = request.form.get('name', default="NULL")
+        type = request.form.get('type', default="NULL")
+        price = request.form.get('price', default="NULL")
+        description = request.form.get('description', default="NULL")
+        size = request.form.get('size', default="NULL")
+        image = request.form.get('image', default="NULL")
+        video = request.form.get('video', default="NULL")
+        color = request.form.get('color', default="NULL")
+        quantity = request.form.get('quantity', default="NULL")
         
         cur = con.cursor()
 
