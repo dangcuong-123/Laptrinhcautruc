@@ -238,7 +238,7 @@ parser_add.add_argument('size', type=str, help='Product\'s size (eg: M)', locati
 parser_add.add_argument('video', type=str, help='Product\'s video (eg: dfg)', location='json')
 parser_add.add_argument('color', type=str, help='Product\'s color (eg: den)', location='json')
 parser_add.add_argument('quantity', type=int, help='Product\'s quantity (eg: 5)', location='json')
-@namespace.route('/add_product', methods=['PUT'])
+@namespace.route('/add_product', methods=['POST'])
 class AddProduct(Resource):
 
     @namespace.response(500, 'Internal Server error')
@@ -317,7 +317,7 @@ parser_edit.add_argument('size', type=str, help='Product\'s size (eg: M)', locat
 parser_edit.add_argument('video', type=str, help='Product\'s video (eg: dfg)', location='json')
 parser_edit.add_argument('color', type=str, help='Product\'s color (eg: den)', location='json')
 parser_edit.add_argument('quantity', type=int, help='Product\'s quantity (eg: 5)', location='json')
-@namespace.route('/edit_product', methods=['POST'])
+@namespace.route('/edit_product', methods=['PUT'])
 class EditProduct(Resource):
 
     @namespace.response(500, 'Internal Server error')
