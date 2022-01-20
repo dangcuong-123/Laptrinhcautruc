@@ -100,7 +100,7 @@ class SearchCategoryByName(Resource):
 
 parser_add = reqparse.RequestParser()
 parser_add.add_argument('name', type=str, help='Category\'s name (eg: quan)', location='json')
-@namespace.route('/add_category', methods=['POST'])
+@namespace.route('/add_category', methods=['PUT'])
 class AddCategory(Resource):
     @namespace.response(500, 'Internal Server error')
     @namespace.response(200, 'Successfully Added Category')
@@ -159,7 +159,7 @@ parser_edit = reqparse.RequestParser()
 parser_edit.add_argument('id', type=int, help='Category\'s id (eg: 123)', location='json')
 parser_edit.add_argument('name', type=str, help='New category\'s name (eg: quan)', location='json')
 
-@namespace.route('/edit_category', methods=['PUT'])
+@namespace.route('/edit_category', methods=['POST'])
 class EditProduct(Resource):
 
     @namespace.response(500, 'Internal Server error')
