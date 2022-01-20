@@ -228,16 +228,16 @@ class SearchByFilters(Resource):
 
 
 parser_add = reqparse.RequestParser()
-parser_add.add_argument('name', type=str, help='Product\'s name (eg: quan dai)', location='json')
-parser_add.add_argument('detail', type=str, help='Product\'s detail (eg: vai den tron bong)', location='json')
-parser_add.add_argument('brand', type=str, help='Product\'s brand', location='json')
-parser_add.add_argument('price', type=float, help='Product\'s price (eg: 50000)', location='json')
-parser_add.add_argument('category_id', type=int, help='Product\'s category_id', location='json')
-parser_add.add_argument('image', type=str, help='Product\'s image (eg: fgfg)', location='json')
-parser_add.add_argument('size', type=str, help='Product\'s size (eg: M)', location='json')
-parser_add.add_argument('video', type=str, help='Product\'s video (eg: dfg)', location='json')
-parser_add.add_argument('color', type=str, help='Product\'s color (eg: den)', location='json')
-parser_add.add_argument('quantity', type=int, help='Product\'s quantity (eg: 5)', location='json')
+parser_add.add_argument('name', type=str, help='Product\'s name (eg: quan dai)', location='form')
+parser_add.add_argument('detail', type=str, help='Product\'s detail (eg: vai den tron bong)', location='form')
+parser_add.add_argument('brand', type=str, help='Product\'s brand', location='form')
+parser_add.add_argument('price', type=float, help='Product\'s price (eg: 50000)', location='form')
+parser_add.add_argument('category_id', type=int, help='Product\'s category_id', location='form')
+parser_add.add_argument('image', type=str, help='Product\'s image (eg: fgfg)', location='form')
+parser_add.add_argument('size', type=str, help='Product\'s size (eg: M)', location='form')
+parser_add.add_argument('video', type=str, help='Product\'s video (eg: dfg)', location='form')
+parser_add.add_argument('color', type=str, help='Product\'s color (eg: den)', location='form')
+parser_add.add_argument('quantity', type=int, help='Product\'s quantity (eg: 5)', location='form')
 @namespace.route('/add_product', methods=['PUT'])
 class AddProduct(Resource):
 
@@ -247,17 +247,16 @@ class AddProduct(Resource):
     @namespace.expect(parser_add, validate=True)
     def put(self):
         con = sqlite3.connect('database.db')
-        content = json.loads(request.data)
-        name = content.get("name","NULL")
-        detail = content.get("detail","NULL")
-        brand = content.get("brand","NULL")
-        price = content.get("price","NULL")
-        category_id = content.get("category_id","NULL")
-        image = content.get("image","NULL")
-        size = content.get("size","NULL")
-        video = content.get("video","NULL")
-        color = content.get("color","NULL")
-        quantity = content.get("quantity","NULL")
+        name = request.form.get('name', default="NULL")
+        detail = request.form.get('detail', default="NULL")
+        brand = request.form.get('brand', default="NULL")
+        price = request.form.get('price', default="NULL")
+        category_id = request.form.get('category_id', default="NULL")
+        image = request.form.get('image', default="NULL")
+        size = request.form.get('size', default="NULL")
+        video = request.form.get('video', default="NULL")
+        color = request.form.get('color', default="NULL")
+        quantity = request.form.get('quantity', default="NULL")
         
         cur = con.cursor()
 
@@ -275,7 +274,7 @@ class AddProduct(Resource):
         return 'Successfully Added Product'
 
 parser_delete = reqparse.RequestParser()
-parser_delete.add_argument('id', type=int, help='Product\'s id (eg: 123)', location='json')
+parser_delete.add_argument('id', type=int, help='Product\'s id (eg: 123)', location='form')
 
 @namespace.route('/delete_product', methods=['DELETE'])
 class DeleteProduct(Resource):
@@ -288,8 +287,7 @@ class DeleteProduct(Resource):
     def delete(self):
         con = sqlite3.connect('database.db')
 
-        content = json.loads(request.data)
-        id = content.get("id","NULL")
+        id = request.form['id']
 
         cur = con.cursor()
         cur.execute("SELECT id FROM products WHERE id = {};".format(id))
@@ -306,17 +304,17 @@ class DeleteProduct(Resource):
         return 'Successfully Delete Product'
 
 parser_edit = reqparse.RequestParser()
-parser_edit.add_argument('id', type=int, help='Product\'s id (eg: 123)', location='json')
-parser_edit.add_argument('name', type=str, help='Product\'s name (eg: quan dai)', location='json')
-parser_edit.add_argument('detail', type=str, help='Product\'s detail (eg: vai den tron bong)', location='json')
-parser_edit.add_argument('brand', type=str, help='Product\'s brand', location='json')
-parser_edit.add_argument('price', type=float, help='Product\'s price (eg: 50000)', location='json')
-parser_edit.add_argument('category_id', type=int, help='Product\'s category_id', location='json')
-parser_edit.add_argument('image', type=str, help='Product\'s image (eg: fgfg)', location='json')
-parser_edit.add_argument('size', type=str, help='Product\'s size (eg: M)', location='json')
-parser_edit.add_argument('video', type=str, help='Product\'s video (eg: dfg)', location='json')
-parser_edit.add_argument('color', type=str, help='Product\'s color (eg: den)', location='json')
-parser_edit.add_argument('quantity', type=int, help='Product\'s quantity (eg: 5)', location='json')
+parser_edit.add_argument('id', type=int, help='Product\'s id (eg: 123)', location='form')
+parser_edit.add_argument('name', type=str, help='Product\'s name (eg: quan dai)', location='form')
+parser_edit.add_argument('detail', type=str, help='Product\'s detail (eg: vai den tron bong)', location='form')
+parser_edit.add_argument('brand', type=str, help='Product\'s brand', location='form')
+parser_edit.add_argument('price', type=float, help='Product\'s price (eg: 50000)', location='form')
+parser_edit.add_argument('category_id', type=int, help='Product\'s category_id', location='form')
+parser_edit.add_argument('image', type=str, help='Product\'s image (eg: fgfg)', location='form')
+parser_edit.add_argument('size', type=str, help='Product\'s size (eg: M)', location='form')
+parser_edit.add_argument('video', type=str, help='Product\'s video (eg: dfg)', location='form')
+parser_edit.add_argument('color', type=str, help='Product\'s color (eg: den)', location='form')
+parser_edit.add_argument('quantity', type=int, help='Product\'s quantity (eg: 5)', location='form')
 @namespace.route('/edit_product', methods=['POST'])
 class EditProduct(Resource):
 
@@ -327,22 +325,20 @@ class EditProduct(Resource):
 
     def post(self):
         con = sqlite3.connect('database.db')
-        content = json.loads(request.data)
-
-        id = content.get("id","NULL")
+        
+        id = request.form.get("id", default="NULL")
         if(id == "NULL"):
             return namespace.abort(400, 'ID Product Not Null')
-        
-        name = content.get("name","NULL")
-        detail = content.get("detail","NULL")
-        brand = content.get("brand","NULL")
-        price = content.get("price","NULL")
-        category_id = content.get("category_id","NULL")
-        image = content.get("image","NULL")
-        size = content.get("size","NULL")
-        video = content.get("video","NULL")
-        color = content.get("color","NULL")
-        quantity = content.get("quantity","NULL")
+        name = request.form.get('name', default="NULL")
+        detail = request.form.get('detail', default="NULL")
+        brand = request.form.get('brand', default="NULL")
+        price = request.form.get('price', default="NULL")
+        category_id = request.form.get('category_id', default="NULL")
+        image = request.form.get('image', default="NULL")
+        size = request.form.get('size', default="NULL")
+        video = request.form.get('video', default="NULL")
+        color = request.form.get('color', default="NULL")
+        quantity = request.form.get('quantity', default="NULL")
 
         cur = con.cursor()
         cur.execute("SELECT id FROM products WHERE id = {};".format(id))
@@ -369,5 +365,4 @@ class EditProduct(Resource):
         cur.close()
 
         return 'Successfully Edit Product'
-
 

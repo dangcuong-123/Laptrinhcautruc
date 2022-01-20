@@ -22,10 +22,10 @@ cur.execute('''CREATE TABLE IF NOT EXISTS category (ID INTEGER PRIMARY KEY AUTOI
                                     name varchar(50) DEFAULT NULL);''')
 
 cur.execute('''INSERT INTO category (ID, name) VALUES
-(128, 'sip');''')
+(129, 'Pants');''')
 
 cur.execute('''INSERT INTO category (name) VALUES
-('quan'),('ao'), ('mu'), ('tui'), ('dam');''')
+('Shirt'), ('Hat'), ('Bag'), ('Dress');''')
 
 cur.execute('''INSERT INTO products (ID, name, detail, brand, price, category_id, image, size, video, color, quantity) VALUES
 (128, "quan nu xep li", "vai khong cang", "ZARA" , 458000, 129, "https://img.ltwebstatic.com/images3_pi/2021/10/21/16347942624bb0b4f4e3c3b4baa9ae8f05c6fc59bd_thumbnail_900x.webp", "M", NULL, "xam den", 50);''')
