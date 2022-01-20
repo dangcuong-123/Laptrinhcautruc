@@ -99,7 +99,7 @@ class SearchCategoryByName(Resource):
         return response
 
 parser_add = reqparse.RequestParser()
-parser_add.add_argument('name', type=str, help='Category\'s name (eg: quan)', location='form')
+parser_add.add_argument('name', type=str, help='Category\'s name (eg: quan)', location='json')
 @namespace.route('/add_category', methods=['PUT'])
 class AddCategory(Resource):
     @namespace.response(500, 'Internal Server error')
@@ -108,7 +108,9 @@ class AddCategory(Resource):
     @namespace.expect(parser_add, validate=True)
     def put(self):
         con = sqlite3.connect('database.db')
-        name = request.form.get('name', default="NULL")
+        content = json.loads(request.data)
+
+        name = content.get("name","NULL")
         
         cur = con.cursor()
         
@@ -124,7 +126,7 @@ class AddCategory(Resource):
         return 'Successfully Added Category'
 
 parser_delete = reqparse.RequestParser()
-parser_delete.add_argument('id', type=int, help='Category\'s id (eg: 123)', location='form')
+parser_delete.add_argument('id', type=int, help='Category\'s id (eg: 123)', location='json')
 
 @namespace.route('/delete_category', methods=['DELETE'])
 class DeleteCategory(Resource):
@@ -135,8 +137,9 @@ class DeleteCategory(Resource):
     @namespace.expect(parser_delete, validate=True)
     def delete(self):
         con = sqlite3.connect('database.db')
+        content = json.loads(request.data)
 
-        id = request.form['id']
+        id = content.get("id","NULL")
 
         cur = con.cursor()
         cur.execute("SELECT id FROM category WHERE id = {};".format(id))
@@ -153,8 +156,8 @@ class DeleteCategory(Resource):
         return 'Successfully Delete Category'
 
 parser_edit = reqparse.RequestParser()
-parser_edit.add_argument('id', type=int, help='Category\'s id (eg: 123)', location='form')
-parser_edit.add_argument('name', type=str, help='New category\'s name (eg: quan)', location='form')
+parser_edit.add_argument('id', type=int, help='Category\'s id (eg: 123)', location='json')
+parser_edit.add_argument('name', type=str, help='New category\'s name (eg: quan)', location='json')
 
 @namespace.route('/edit_category', methods=['POST'])
 class EditProduct(Resource):
@@ -166,12 +169,15 @@ class EditProduct(Resource):
 
     def post(self):
         con = sqlite3.connect('database.db')
-        try:
-            id = request.form['id']
-        except:
+
+        content = json.loads(request.data)
+
+        id = content.get("id","NULL")
+
+        if(id == "NULL"):
             return namespace.abort(400, 'Error')
         
-        name = request.form.get('name', default=None)
+        name = content.get("name", None)
 
         cur = con.cursor()
         cur.execute("SELECT id FROM category WHERE id = {};".format(id))
