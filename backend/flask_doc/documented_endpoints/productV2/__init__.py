@@ -186,12 +186,13 @@ class EditProduct(Resource):
             cur.close()
             return namespace.abort(400, 'ID Product Not Found')
         
-        cur.execute("SELECT id FROM category WHERE id = {};".format(category_id))
-        fetchdata = cur.fetchall()
-        
-        if(len(fetchdata) == 0):
-            cur.close()
-            return namespace.abort(400, 'ID Category Not Found')
+        if(category_id != 'NULL'):
+            cur.execute("SELECT id FROM category WHERE id = {};".format(category_id))
+            fetchdata = cur.fetchall()
+            
+            if(len(fetchdata) == 0):
+                cur.close()
+                return namespace.abort(400, 'ID Category Not Found')
 
         cols = ['name', 'detail', 'brand', 'price', 'category_id', 'image', 'size', 'video', 'color', 'quantity']
         inputs = [name, detail, brand, price, category_id, image, size, video, color, quantity]
