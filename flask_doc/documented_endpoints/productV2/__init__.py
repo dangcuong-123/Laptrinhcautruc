@@ -113,10 +113,8 @@ class AddProduct(Resource):
 
 parser_delete = reqparse.RequestParser()
 parser_delete.add_argument('id', type=int, help='Product\'s id (eg: 123)', location='json')
-
 @namespace.route('/delete_product', methods=['DELETE'])
 class DeleteProduct(Resource):
-
     @namespace.response(500, 'Internal Server error')
     @namespace.response(200, 'Successfully delete')
     @namespace.response(400, 'ID product not found')

@@ -127,7 +127,6 @@ class AddCategory(Resource):
 
 parser_delete = reqparse.RequestParser()
 parser_delete.add_argument('id', type=int, help='Category\'s id (eg: 123)', location='json')
-
 @namespace.route('/delete_category', methods=['DELETE'])
 class DeleteCategory(Resource):
 
@@ -158,9 +157,8 @@ class DeleteCategory(Resource):
 parser_edit = reqparse.RequestParser()
 parser_edit.add_argument('id', type=int, help='Category\'s id (eg: 123)', location='json')
 parser_edit.add_argument('name', type=str, help='New category\'s name (eg: quan)', location='json')
-
 @namespace.route('/edit_category', methods=['POST'])
-class EditProduct(Resource):
+class EditCategory(Resource):
 
     @namespace.response(500, 'Internal Server error')
     @namespace.response(400, 'Error - ID Not Found')

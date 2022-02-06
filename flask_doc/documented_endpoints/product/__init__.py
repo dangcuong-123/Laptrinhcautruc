@@ -145,7 +145,6 @@ def is_float(element) -> bool:
 parser_price = reqparse.RequestParser()
 parser_price.add_argument('from', type=float, help='Price product\'s from (eg: 100)')
 parser_price.add_argument('to', type=float, help='Price product\'s to (eg: 200)')
-
 @namespace.route('/price')
 class SearchByPrice(Resource):
     @namespace.response(500, 'Internal Server error')
@@ -275,7 +274,6 @@ class AddProduct(Resource):
 
 parser_delete = reqparse.RequestParser()
 parser_delete.add_argument('id', type=int, help='Product\'s id (eg: 123)', location='form')
-
 @namespace.route('/delete_product', methods=['DELETE'])
 class DeleteProduct(Resource):
 
