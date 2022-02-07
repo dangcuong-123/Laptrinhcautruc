@@ -49,7 +49,7 @@
                                 <p class="my-2">
                                     <span class="text-muted">Category: </span>
                                     <span class="text-capitalize">
-                                        {{product.category_id}}
+                                        {{ getCategoryById(product.category_id) }}
                                     </span>
                                 </p>
                                 <p class="my-2">
@@ -92,7 +92,7 @@ export default {
         filterProducts(){
             return this.$store.state.products.filter(product => {
                 return product.name.toLowerCase().includes(this.searchProduct.toLowerCase()) &&
-                    this.capitalized(product.category_id).includes(this.capitalized(this.filterByCategory)) &&
+                    this.capitalized(this.getCategoryById(product.category_id)).includes(this.capitalized(this.filterByCategory)) &&
                     this.filterPrice(product.price)
             })
         }
@@ -111,11 +111,13 @@ export default {
         formatPrice(product){
             return product.toFixed(2)
         },
+        getCategoryById(id) {
+            return this.$store.state.categories.find(x => x.id === id).name
+        },
         eliminateDuplicatedCategories(products){
-            console.log(this.$store.state.categories)
             let arr = []
             products.forEach(product => {
-                arr.push(product.category_id)
+                arr.push(this.getCategoryById(product.category_id))
             })
             return [...new Set(arr)];
         },

@@ -36,7 +36,7 @@
                 <h2 class="mb-4">{{ product.name }}</h2>
                 <p class="my-2">
                   Category:
-                  <span class="text-capitalize">{{ product.category_id }}</span>
+                  <span class="text-capitalize">{{ getCategoryById(product.category_id) }}</span>
                 </p>
                 <p class="my-2">
                   Color:
@@ -103,6 +103,9 @@ export default {
     },
     addToCard(product) {
       return this.$store.state.card.push(product);
+    },
+    getCategoryById(id) {
+      return this.$store.state.categories.find((x) => x.id === id).name;
     },
   },
 };
