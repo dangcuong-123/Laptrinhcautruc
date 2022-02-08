@@ -120,7 +120,7 @@
 
         <!-- Submit button -->
         <button
-          @click="submitAddProduct"
+          @click.prevent="submitAddProduct"
           class="btn btn-primary btn-block mb-4"
         >
           Add Product
@@ -176,10 +176,8 @@ export default {
           this.data
         )
         .then((res) => {
-          console.log(res);
-          console.log(res.data);
+          alert(res.data);
         });
-      alert(res.status);
     },
   },
 };

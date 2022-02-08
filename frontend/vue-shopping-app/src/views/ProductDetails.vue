@@ -29,14 +29,16 @@
                 justify-content-between
                 align-items-start
                 mb-md-0 mb-5
-                px-4
+                px-5
               "
             >
               <div class="mt-4 mt-md-0">
                 <h2 class="mb-4">{{ product.name }}</h2>
                 <p class="my-2">
                   Category:
-                  <span class="text-capitalize">{{ getCategoryById(product.category_id) }}</span>
+                  <span class="text-capitalize">{{
+                    getCategoryById(product.category_id)
+                  }}</span>
                 </p>
                 <p class="my-2">
                   Color:
@@ -67,8 +69,17 @@
                   {{ formatDescription(product.detail) }}
                 </p>
               </div>
-              <div class="d-inline-block mt-4">
-                <router-link to="/" class="text-decoration-none">
+
+              <div class="d-inline-block mt-4 d-flex flex-row">
+                <router-link to="/" class="text-decoration-none p-2" v-if="$store.state.isAdmin">
+                  <button
+                    @click="submitDeleteProduct"
+                    class="btn btn-danger btn-block"
+                  >
+                    Delete Product
+                  </button>
+                </router-link>
+                <router-link to="/" class="text-decoration-none p-2">
                   <a href="#" class="btn btn-warning d-flex align-items-center">
                     <i class="fas fa-arrow-left mx-1"></i>
                     Back to Main Page
@@ -85,6 +96,8 @@
 
 <script>
 import Header from "../components/Header.vue";
+import axios from "axios";
+
 export default {
   name: "ProductDetails",
   components: { Header },
@@ -92,17 +105,21 @@ export default {
     return {};
   },
   methods: {
-    formatRating(product) {
-      return product.toFixed(1);
+    submitDeleteProduct() {
+      const res = axios
+        .delete(
+          "https://laptrinhcautrucapi.herokuapp.com/productV2/delete_product",
+          { data: { id: parseInt(this.$route.params.id) } }
+        )
+        .then((res) => {
+          alert(res.data);
+        });
     },
     formatPrice(product) {
       return product.toFixed(2);
     },
     formatDescription(product) {
       return product.charAt(0).toUpperCase() + product.slice(1);
-    },
-    addToCard(product) {
-      return this.$store.state.card.push(product);
     },
     getCategoryById(id) {
       return this.$store.state.categories.find((x) => x.id === id).name;

@@ -4,7 +4,8 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     products: [],
-    categories: []
+    categories: [],
+    isAdmin: false
   },
   mutations: {
     getProducts(state, products){
