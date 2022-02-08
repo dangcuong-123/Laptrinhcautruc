@@ -69,6 +69,19 @@
             Delete Category
           </button>
         </router-link>
+        <router-link to="/editCategory" class="text-decoration-none p-2">
+          <button v-if="$store.state.isAdmin"
+            class="
+              btn btn-warning btn-sm
+              w-100
+              d-flex
+              align-items-center
+              justify-content-center
+            "
+          >
+            Edit Category
+          </button>
+        </router-link>
       </div>
     </div>
   </header>

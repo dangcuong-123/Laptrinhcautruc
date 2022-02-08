@@ -119,12 +119,14 @@
         </div>
 
         <!-- Submit button -->
-        <button
-          @click.prevent="submitAddProduct"
-          class="btn btn-primary btn-block mb-4"
-        >
-          Add Product
-        </button>
+        <router-link to="/">
+          <button
+            @click.prevent="submitAddProduct"
+            class="btn btn-primary btn-block mb-4"
+          >
+            Add Product
+          </button>
+        </router-link>
 
         <div class="btn mb-4">
           <router-link to="/" class="text-decoration-none">

@@ -4,7 +4,7 @@ import ProductDetails from '../views/ProductDetails.vue'
 import AddProduct from '../views/AddProduct.vue'
 import AddCategory from '../views/AddCategory.vue'
 import DeleteCategory from '../views/DeleteCategory.vue'
-
+import EditCategory from '../views/EditCategory.vue'
 const routes = [
   {
     path: '/',
@@ -30,6 +30,11 @@ const routes = [
     path: '/deleteCategory',
     name: 'DeleteCategory',
     component: DeleteCategory
+  },
+  {
+    path: '/editCategory',
+    name: 'EditCategory',
+    component: EditCategory
   }
 ]
 
